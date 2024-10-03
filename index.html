@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<div id="mainContent">
+
+    <form action="index.php" id="userForm" method="post">
+        <input class="inputField" type="text" name="username" placeholder="Enter your first name">
+        <input class="inputField" type="password" name="password" placeholder="Enter your password">
+        <input type="submit" value="Submit Form" onclick="handleSubmit(); return false;">
+    </form>
+
+    </br></br>
+    <button type="button" onclick="fetchContent()">Load New Content</button>
+</div>
+
+<script>
+function fetchContent() {
+  const request = new XMLHttpRequest();
+  request.onload = function() {
+    document.getElementById("mainContent").innerHTML = this.responseText;
+  }
+  request.open("GET", "content.txt");
+  request.send();
+}
+
+function handleSubmit() {
+    var formElements = document.getElementById("userForm");
+    var formData = new FormData();
+    for(var i = 0; i < formElements.length; i++) {
+        formData.append(formElements[i].name, formElements[i].value);
+    }
+
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState == 4) {
+            if (xhr.status == 200) {
+                alert("Success: " + xhr.responseText);
+                document.getElementById("mainContent").innerHTML = "Welcome, you've logged in successfully!";
+            }
+            else if(xhr.status == 401) {
+                alert("Invalid username or password.");
+            }
+        }
+    }
+    xhr.open("POST", "index.php");
+    xhr.send(formData);
+}
+</script>
+
+</body>
+</html>
